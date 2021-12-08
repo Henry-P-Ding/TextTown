@@ -1,0 +1,5 @@
+https://www.geeksforgeeks.org/private-methods-in-python/
+    - I learned about specifying private/public access using the __ prefix from this source.
+    - Used in locations.py for location classes
+https://www.geeksforgeeks.org/method-overriding-in-python/
+    - learned about overridding in location files here
