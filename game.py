@@ -1,4 +1,5 @@
 # TODO: add explanations for all classes/files
+# TODO: comment out all code
 import settings
 import os
 
@@ -53,11 +54,18 @@ class Game:
         if self.state == "changing":
             adjacent_locations = settings.LOCATIONS[self.player.location].adjacent
             try:
-                self.player.location = adjacent_locations[int(self.inputs)]
+                new_location = adjacent_locations[int(self.inputs)]
+                settings.LOCATIONS[self.player.location].exit(self)
+                settings.LOCATIONS[new_location].enter(self)
+                self.player.location = new_location
+                self.state = "playing"
             except ValueError:
                 self.messages.append("Not a valid input.")
             except IndexError:
                 self.messages.append("Not a valid location.")
+        elif self.state == "playing":
+            if self.inputs == "y":
+                self.state = "changing"
 
     # main game loop. render is called twice, first to render new calculated game states from update(), then to render
     # new content from prompt() logic.
