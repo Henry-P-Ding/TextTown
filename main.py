@@ -23,3 +23,14 @@ while running:
     game.loop()
 
 # omh
+
+'''
+Peer Review Comments
+--------------------
+Commit: 4b4d6c7c1a20bf9a467945f155d02fea340b14fd
+Peer Reviewer: Evelyn
+Feedback:
+I think the images that are printed on top of the code is rlly cool :) I think having to earn money def adds an incentive to the player.
+More interesting if there are colors added to the images. Maybe list the price of the house? Also include like how the house is bigger in size after upgrading it.
+--------------------
+'''

@@ -86,7 +86,7 @@ class House(Location):
 
     def restore_stamina(self, g):
         g.player.stamina = 100
-        g.messages.append("Zzzz.... After a night's rest, you feel energized and ready to work!")
+        g.messages.append("Zzzz.... After a night's rest, you feel energized and ready to work!\nStamina is full.")
 
     def leave(self, g):
         g.state = "changing"
@@ -127,7 +127,8 @@ class Shop(Location):
         available_actions += "\n(" + str(counter) + ") Sell " + str(self.grain_bundle_size) + " grain for " + \
                              str(self.grain_cost) + " dollars."
         counter += 1
-        available_actions += "\n(" + str(counter) + ") Upgrade my house."
+        available_actions += "\n(" + str(counter) + ") Upgrade my house for " + \
+                             str(self.HOUSE_PRICES[g.player.house_tier]) + "dollars ."
         counter += 1
         available_actions += "\n(" + str(counter) + ") Leave the shop."
         g.messages.append(available_actions)
@@ -152,7 +153,8 @@ class Shop(Location):
                 g.player.house_tier += 1
                 g.player.balance -= price
                 g.messages.append(
-                    "Congratulations on the new house! Your house is now tier " + str(g.player.house_tier + 1) + ".")
+                    "Congratulations on the new house! Your house is now tier " + str(g.player.house_tier + 1) +
+                    ".\nReturn to your house to see your new, larger house. ")
             elif g.player.balance < price:
                 g.messages.append("Oops! It's too expensive to upgrade your house. Come back later.")
         else:
@@ -196,9 +198,9 @@ class Farm(Location):
             counter = 0
             self.harvest_yield = 3 + rand.randint(-1, 1)
             self.stamina_drain = 15 + rand.randint(-5, 5)
-            available_actions += "\n(" + str(counter) + ") harvest grain."
+            available_actions += "\n(" + str(counter) + ") Harvest grain."
             counter += 1
-            available_actions += "\n(" + str(counter) + ") leave."
+            available_actions += "\n(" + str(counter) + ") Leave the farm."
             g.messages.append(available_actions)
         else:
             g.messages.insert(0, "\nYou farm grain with the sheer power of your math ability.\n" + 80 * "-")
