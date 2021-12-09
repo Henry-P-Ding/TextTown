@@ -64,32 +64,31 @@ class House(Location):
   &                         &    .     &                                .       
      ,           %                                ,            ,                '''
                        ]
-        self.actions = [self.restore_stamina, self.leave_house]
+        self.actions = [self.restore_stamina, self.leave]
 
     def enter(self, g):
         super().enter(g)
-        g.messages.append("Entering House")
+        g.messages.append("Entering the house.")
 
     def execute(self, g):
         super().execute(g)
         g.messages.insert(0, format_image(self.images[g.player.house_tier]))
-        available_actions = "What would you like to do?"
+        available_actions = "\nWhat would you like to do?"
         counter = 0
         available_actions += "\n(" + str(counter) + ") Sleep"
         counter += 1
-        g.location_actions.append(self.restore_stamina)
         available_actions += "\n(" + str(counter) + ") Leave the house."
         g.messages.append(available_actions)
 
     def exit(self, g):
         super().exit(g)
-        g.messages.append("Exiting house.")
+        g.messages.append("Exiting the house.")
 
     def restore_stamina(self, g):
         g.player.stamina = 100
         g.messages.append("Zzzz.... After a night's rest, you feel energized and ready to work!")
 
-    def leave_house(self, g):
+    def leave(self, g):
         g.state = "changing"
 
 
@@ -109,18 +108,38 @@ class Shop(Location):
   &                         &    .     &                                .       
      ,           %                                ,            ,                '''
         ]
+        self.actions = [self.upgrade_house, self.leave]
+        self.house_prices = [10, 20]
 
     def enter(self, g):
         super().enter(g)
-        g.messages.append("Entering shop.")
+        g.messages.append("Entering the shop.")
 
     def execute(self, g):
         super().execute(g)
         g.messages.insert(0, format_image(self.images[0]))
+        available_actions = "\nWhat would you like to do?"
+        counter = 0
+        available_actions += "\n(" + str(counter) + ") Upgrade my house."
+        counter += 1
+        available_actions += "\n(" + str(counter) + ") Leave the shop."
+        g.messages.append(available_actions)
 
     def exit(self, g):
         super().exit(g)
-        g.messages.append("Exiting shop.")
+        g.messages.append("Exiting the shop.")
+
+    def upgrade_house(self, g):
+        price = self.house_prices[g.player.house_tier - 1]
+        if g.player.balance >= price:
+            g.player_house_tier += 1
+            g.player.balance -= price
+            g.messages.append("Congratulations on the new house! Your house is now tier " + str(g.player.house_tier) + ".")
+        elif g.player.balance < price:
+            g.messages.append("Oops! It's too expensive to upgrade your house. Come back later.")
+
+    def leave(self, g):
+        g.state = "changing"
 
 
 class Farm(Location):
@@ -142,7 +161,7 @@ class Farm(Location):
 
     def enter(self, g):
         super().enter(g)
-        g.messages.append("Entering farm.")
+        g.messages.append("Entering the farm.")
 
     def execute(self, g):
         super().execute(g)

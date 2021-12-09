@@ -8,7 +8,7 @@ LOCATIONS = {
     "farm": locations.Farm(["house"])
 }
 
-# possible game statesx
+# possible game states
 STATES = [
     "changing",
     "playing"

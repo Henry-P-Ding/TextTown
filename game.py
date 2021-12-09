@@ -10,7 +10,7 @@ class Game:
         self.messages = []
         self.prompts = []
         self.inputs = ""
-        self.location_actions = []
+        self.day_count = 1
 
     # returns string with options of available locations to travel to
     def list_available_locations(self):
@@ -27,6 +27,7 @@ class Game:
             # lists out options of available locations to travel to
             self.messages.append(self.list_available_locations())
         elif self.state == "playing":
+            self.messages.append("\nDay: " + str(self.day_count))
             settings.LOCATIONS[self.player.location].execute(self)
 
     # renders messages from update and prompt steps
@@ -45,7 +46,7 @@ class Game:
         # asks user for a valid input for a new location to travel to
         for prompt in self.prompts:
             print(prompt)
-        self.inputs = input(">> ")
+        self.inputs = input("-" * 80 + "\n>> ")
 
         # processes inputs
         if self.state == "changing":
@@ -76,3 +77,4 @@ class Game:
         self.render()
         self.prompt()
         self.render()
+        self.day_count += 1
