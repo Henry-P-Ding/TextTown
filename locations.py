@@ -207,7 +207,7 @@ class Farm(Location):
 
             try:
                 answer = int(g.inputs)
-                if answer == int(eval(self.question)):
+                if self.question_mode == 2 and answer == int(eval(self.question)):
                     g.messages.append("That is correct!")
                     g.player.stamina -= self.stamina_drain
                     g.player.grain += self.harvest_yield
@@ -218,13 +218,13 @@ class Farm(Location):
                     return
                 else:
                     if self.question_mode == 2:
-                        g.messages.append("That is incorrect!")
-                        g.messages.append("Press enter to go back to the farm.")
+                        g.messages.append("That is incorrect!\nPress enter to go back to the farm.")
                         self.question_mode = 0
                         return
                 self.question_mode = 2
             except ValueError:
-                g.messages.append("Not a valid input. Wrong.")
+                g.messages.append("Not a valid input. Wrong.\nPress enter to go back to the farm.")
+                self.question_mode = 0
 
     def exit(self, g):
         super().execute(g)

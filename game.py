@@ -94,7 +94,7 @@ class Game:
             print("-" * 80)
             for prompt in self.prompts:
                 print(prompt)
-            self.inputs = input(">> ")
+            self.inputs = input(">> ").lower().strip()
             self.prompts = []
 
         if self.state == "title":
