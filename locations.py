@@ -3,7 +3,7 @@ Contains different behaviors for locations upon entering/executing/exiting at th
 
 """
 import game
-
+import random as rand
 
 def format_image(image):
     return "-" * 80 + "\n" + image + "\n" + "-" * 80
@@ -108,8 +108,10 @@ class Shop(Location):
   &                         &    .     &                                .       
      ,           %                                ,            ,                '''
         ]
-        self.actions = [self.upgrade_house, self.leave]
-        self.house_prices = [10, 20]
+        self.actions = [self.sell_grain, self.upgrade_house, self.leave]
+        self.HOUSE_PRICES = [10, 20]
+        self.grain_bundle_size = 5 + rand.randint(-1, 1)
+        self.grain_cost = 5 + rand.randint(-1, 1)
 
     def enter(self, g):
         super().enter(g)
@@ -120,6 +122,11 @@ class Shop(Location):
         g.messages.insert(0, format_image(self.images[0]))
         available_actions = "\nWhat would you like to do?"
         counter = 0
+        self.grain_bundle_size = 5 + rand.randint(-1, 1)
+        self.grain_cost = 5 + rand.randint(-1, 1)
+        available_actions += "\n(" + str(counter) + ") Sell " + str(self.grain_bundle_size) + " grain for " + \
+                             str(self.grain_cost) + " dollars."
+        counter += 1
         available_actions += "\n(" + str(counter) + ") Upgrade my house."
         counter += 1
         available_actions += "\n(" + str(counter) + ") Leave the shop."
@@ -129,14 +136,26 @@ class Shop(Location):
         super().exit(g)
         g.messages.append("Exiting the shop.")
 
+    def sell_grain(self, g):
+        if g.player.grain >= self.grain_bundle_size:
+            g.player.grain -= self.grain_bundle_size
+            g.player.balance += self.grain_cost
+            g.messages.append("You sold " + str(g.player.grain) + " grain.")
+            g.messages.append("You received " + str(g.player.balance) + " dollars.")
+        elif g.player.grain < self.grain_bundle_size:
+            g.messages.append("Oops! You don't have enough grain to sell. Come back later.")
+
     def upgrade_house(self, g):
-        price = self.house_prices[g.player.house_tier - 1]
-        if g.player.balance >= price:
-            g.player_house_tier += 1
-            g.player.balance -= price
-            g.messages.append("Congratulations on the new house! Your house is now tier " + str(g.player.house_tier) + ".")
-        elif g.player.balance < price:
-            g.messages.append("Oops! It's too expensive to upgrade your house. Come back later.")
+        if g.player.house_tier < 2:
+            price = self.HOUSE_PRICES[g.player.house_tier - 1]
+            if g.player.balance >= price:
+                g.player.house_tier += 1
+                g.player.balance -= price
+                g.messages.append("Congratulations on the new house! Your house is now tier " + str(g.player.house_tier + 1) + ".")
+            elif g.player.balance < price:
+                g.messages.append("Oops! It's too expensive to upgrade your house. Come back later.")
+        else:
+            g.messages.append("Your house is already max tier!")
 
     def leave(self, g):
         g.state = "changing"

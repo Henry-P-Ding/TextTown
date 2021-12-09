@@ -30,6 +30,13 @@ class Game:
             self.messages.append("\nDay: " + str(self.day_count))
             settings.LOCATIONS[self.player.location].execute(self)
 
+            # formats the contents of player's inventory
+            self.messages.append("\n" + "-" * 80 + "\n")
+            self.messages.append("PLAYER INVENTORY:")
+            self.messages.append("Stamina: " + str(self.player.stamina))
+            self.messages.append("Grain: " + str(self.player.grain))
+            self.messages.append("Balance: " + str(self.player.balance) + "\n")
+
     # renders messages from update and prompt steps
     def render(self):
         # Terminal clearing code adapted from user 'poke' on StackOverflow here:
