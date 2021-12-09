@@ -1,6 +1,5 @@
 """
 Contains different behaviors for locations upon entering/executing/exiting at these locations
-
 """
 import game
 import random as rand

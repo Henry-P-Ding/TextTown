@@ -11,5 +11,7 @@ LOCATIONS = {
 # possible game states
 STATES = [
     "changing",
-    "playing"
+    "playing",
+    "title",
+    "booting"
 ]

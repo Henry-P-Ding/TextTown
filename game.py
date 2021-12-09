@@ -3,6 +3,7 @@
 import locations
 import settings
 import os
+import time
 
 class Game:
     def __init__(self, player, state):
@@ -12,6 +13,7 @@ class Game:
         self.prompts = []
         self.inputs = ""
         self.day_count = 1
+        self.boot_up_counter = 0
 
     # returns string with options of available locations to travel to
     def list_available_locations(self):
@@ -27,6 +29,7 @@ class Game:
             # lists out options of available locations to travel to
             self.messages.append(self.list_available_locations())
         elif self.state == "playing":
+            self.day_count += 1
             self.messages.append("\nDay: " + str(self.day_count))
             settings.LOCATIONS[self.player.location].execute(self)
 
@@ -36,6 +39,33 @@ class Game:
             self.messages.append("Stamina: " + str(self.player.stamina))
             self.messages.append("Grain: " + str(self.player.grain))
             self.messages.append("Balance: " + str(self.player.balance) + "\n")
+        elif self.state == "booting":
+            if self.boot_up_counter < 48:
+                self.messages.append("\n" * (47 - self.boot_up_counter) + (36 * "-" + "LOADING" + 37 * "-" + "\n") + \
+                                     "\n" * self.boot_up_counter)
+                self.boot_up_counter += 1
+            else:
+                self.state = "title"
+                self.messages.append('''
+                                                                                
+  @@@@@@@@@@@@@@@   @@@@@@@@@@@@   @@@      @@@   @@@@@@@@@@@@@@@               
+        @@@         @@@            @@@      @@@         @@@                     
+        @@@         @@@//////      (((//////(((         @@@                     
+        @@@         @@@@@@@@@         @@@@@@            @@@                     
+        @@@         @@@            @@@      @@@         @@@                     
+        @@@         @@@@@@@@@@@@   @@@      @@@         @@@                     
+                                                                                
+             @@@@@@@@@@@@@@@      @@@@@@      @@@         @@@   @@@      @@@    
+                   @@@         @@@      @@@   @@@         @@@   @@@@@@   @@@    
+                   @@@         @@@      @@@   @@@   %%%   @@@   @@@,,,%%%@@@    
+                   @@@         @@@      @@@   @@@,,,%%%,,,@@@   @@@   %%%@@@    
+                   @@@         @@@      @@@   @@@@@@   @@@@@@   @@@      @@@    
+                   @@@            @@@@@@      @@@         @@@   @@@      @@@    
+                                                                                
+''')
+                self.prompts.append("Start the game? [yes] or [no]")
+        elif self.state == "title":
+            self.prompts.append("Start the game? [yes] or [no]")
 
     # renders messages from update and prompt steps
     def render(self):
@@ -46,19 +76,62 @@ class Game:
         # display messages sequentially
         for message in self.messages:
             print(message)
+        if self.state == "booting":
+            time.sleep(0.01)
 
     # prompts user for inputs
     def prompt(self):
         self.messages = []
-        # asks user for a valid input for a new location to travel to
-        print("-" * 80)
-        for prompt in self.prompts:
-            print(prompt)
-        self.inputs = input(">> ")
-        self.prompts = []
+        if self.state != "booting":
+            # asks user for a valid input for a new location to travel to
+            print("-" * 80)
+            for prompt in self.prompts:
+                print(prompt)
+            self.inputs = input(">> ")
+            self.prompts = []
+
+        if self.state == "title":
+            if self.inputs == "yes":
+                self.state = "playing"
+            elif self.inputs == "no":
+                self.messages.append('''
+
+  @@@@@@@@@@@@@@@   @@@@@@@@@@@@   @@@      @@@   @@@@@@@@@@@@@@@               
+        @@@         @@@            @@@      @@@         @@@                     
+        @@@         @@@//////      (((//////(((         @@@                     
+        @@@         @@@@@@@@@         @@@@@@            @@@                     
+        @@@         @@@            @@@      @@@         @@@                     
+        @@@         @@@@@@@@@@@@   @@@      @@@         @@@                     
+
+             @@@@@@@@@@@@@@@      @@@@@@      @@@         @@@   @@@      @@@    
+                   @@@         @@@      @@@   @@@         @@@   @@@@@@   @@@    
+                   @@@         @@@      @@@   @@@   %%%   @@@   @@@,,,%%%@@@    
+                   @@@         @@@      @@@   @@@,,,%%%,,,@@@   @@@   %%%@@@    
+                   @@@         @@@      @@@   @@@@@@   @@@@@@   @@@      @@@    
+                   @@@            @@@@@@      @@@         @@@   @@@      @@@    
+
+                ''')
+                self.messages.append("Hmm... I think you should start the game.")
+            else:
+                self.messages.append('''
+  @@@@@@@@@@@@@@@   @@@@@@@@@@@@   @@@      @@@   @@@@@@@@@@@@@@@               
+        @@@         @@@            @@@      @@@         @@@                     
+        @@@         @@@//////      (((//////(((         @@@                     
+        @@@         @@@@@@@@@         @@@@@@            @@@                     
+        @@@         @@@            @@@      @@@         @@@                     
+        @@@         @@@@@@@@@@@@   @@@      @@@         @@@                  
+        
+             @@@@@@@@@@@@@@@      @@@@@@      @@@         @@@   @@@      @@@    
+                   @@@         @@@      @@@   @@@         @@@   @@@@@@   @@@    
+                   @@@         @@@      @@@   @@@   %%%   @@@   @@@,,,%%%@@@    
+                   @@@         @@@      @@@   @@@,,,%%%,,,@@@   @@@   %%%@@@    
+                   @@@         @@@      @@@   @@@@@@   @@@@@@   @@@      @@@    
+                   @@@            @@@@@@      @@@         @@@   @@@      @@@ 
+                ''')
+                self.messages.append("Not a valid input.")
 
         # processes inputs
-        if self.state == "changing":
+        elif self.state == "changing":
             adjacent_locations = settings.LOCATIONS[self.player.location].adjacent
             try:
                 new_location = adjacent_locations[int(self.inputs)]
@@ -89,4 +162,3 @@ class Game:
         self.render()
         self.prompt()
         self.render()
-        self.day_count += 1

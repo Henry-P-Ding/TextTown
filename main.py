@@ -11,7 +11,7 @@ class Player:
         self.location = "house"
         self.stamina = 100
         self.balance = 0
-        self.grain = 100
+        self.grain = 0
         self.house_tier = 0
 
     # learned from Choate Programming Union Meeting
@@ -20,7 +20,7 @@ class Player:
 
 
 player = Player()
-game = Game(player, "playing")
+game = Game(player, "booting")
 
 running = True
 while running:
