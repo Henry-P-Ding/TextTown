@@ -9,3 +9,5 @@ https://docs.python.org/3/library/exceptions.html#bltin-exceptions
     - list of python exceptions
 https://www.tutorialspoint.com/python/assertions_in_python.htm
     - assertions in python
+https://www.ascii-art-generator.org/
+    - program used to convert all pixel art images to ascii equivalents

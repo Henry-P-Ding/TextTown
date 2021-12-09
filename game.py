@@ -10,11 +10,12 @@ class Game:
         self.messages = []
         self.prompts = []
         self.inputs = ""
+        self.location_actions = []
 
     # returns string with options of available locations to travel to
     def list_available_locations(self):
         adjacent_locations = settings.LOCATIONS[self.player.location].adjacent
-        location_listing = "Available locations: "
+        location_listing = "Where would you like to go?"
         for i in range(0, len(adjacent_locations)):
             location_listing += "\n(" + str(i) + ") " + adjacent_locations[i]
         return location_listing
@@ -23,13 +24,9 @@ class Game:
     def update(self):
         self.prompts = []
         if self.state == "changing":
-            # list player states at the top of the window
-            self.messages.append("Current location: " + self.player.location + ".")
-
             # lists out options of available locations to travel to
             self.messages.append(self.list_available_locations())
         elif self.state == "playing":
-            self.messages.append("Current location: " + self.player.location + ".")
             settings.LOCATIONS[self.player.location].execute(self)
 
     # renders messages from update and prompt steps
@@ -64,8 +61,13 @@ class Game:
             except IndexError:
                 self.messages.append("Not a valid location.")
         elif self.state == "playing":
-            if self.inputs == "y":
-                self.state = "changing"
+            try:
+                action_index = int(self.inputs)
+                settings.LOCATIONS[self.player.location].actions[action_index](self)
+            except ValueError:
+                self.messages.append("Not a valid input.")
+            except IndexError:
+                self.messages.append("Not a valid option.")
 
     # main game loop. render is called twice, first to render new calculated game states from update(), then to render
     # new content from prompt() logic.
