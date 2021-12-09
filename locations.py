@@ -5,6 +5,7 @@ Contains different behaviors for locations upon entering/executing/exiting at th
 import game
 import random as rand
 
+
 def format_image(image):
     return "-" * 80 + "\n" + image + "\n" + "-" * 80
 
@@ -151,7 +152,8 @@ class Shop(Location):
             if g.player.balance >= price:
                 g.player.house_tier += 1
                 g.player.balance -= price
-                g.messages.append("Congratulations on the new house! Your house is now tier " + str(g.player.house_tier + 1) + ".")
+                g.messages.append(
+                    "Congratulations on the new house! Your house is now tier " + str(g.player.house_tier + 1) + ".")
             elif g.player.balance < price:
                 g.messages.append("Oops! It's too expensive to upgrade your house. Come back later.")
         else:
@@ -177,6 +179,11 @@ class Farm(Location):
   &  @      @    @    @     &    @     &          .       @    @    @   @       
      ,      ,    @                                ,            ,    ,           '''
         ]
+        self.actions = [self.harvest, self.leave]
+        self.harvest_yield = 3 + rand.randint(-1, 1)
+        self.stamina_drain = 15 + rand.randint(-5, 5)
+        self.question_mode = 0
+        self.question = ""
 
     def enter(self, g):
         super().enter(g)
@@ -184,8 +191,52 @@ class Farm(Location):
 
     def execute(self, g):
         super().execute(g)
-        g.messages.insert(0, format_image(self.images[0]))
+        if self.question_mode == 0:
+            g.messages.insert(0, format_image(self.images[0]))
+            available_actions = "\nWhat would you like to do?"
+            counter = 0
+            self.harvest_yield = 3 + rand.randint(-1, 1)
+            self.stamina_drain = 15 + rand.randint(-5, 5)
+            available_actions += "\n(" + str(counter) + ") harvest grain."
+            counter += 1
+            available_actions += "\n(" + str(counter) + ") leave."
+            g.messages.append(available_actions)
+        else:
+            g.messages.insert(0, "\nYou farm grain with the sheer power of your math ability.\n" + 80 * "-")
+
+            try:
+                answer = int(g.inputs)
+                if answer == int(eval(self.question)):
+                    g.messages.append("That is correct!")
+                    g.player.stamina -= self.stamina_drain
+                    g.player.grain += self.harvest_yield
+                    g.messages.append("You harvested " + str(self.harvest_yield) + " grain while losing " + \
+                                      str(self.stamina_drain) + " stamina.")
+                    g.messages.append("Press enter to go back to the farm.")
+                    self.question_mode = 0
+                    return
+                else:
+                    if self.question_mode == 2:
+                        g.messages.append("That is incorrect!")
+                        g.messages.append("Press enter to go back to the farm.")
+                        self.question_mode = 0
+                        return
+                self.question_mode = 2
+            except ValueError:
+                g.messages.append("Not a valid input. Wrong.")
 
     def exit(self, g):
         super().execute(g)
         g.messages.append("Exiting the farm.")
+
+    def harvest(self, g):
+        if g.player.stamina >= self.stamina_drain:
+            n, m = rand.randint(1, 10), rand.randint(1, 10)
+            self.question = str(n) + " * " + str(m)
+            g.prompts.append("What is " + self.question + "?")
+            self.question_mode = 1
+        else:
+            g.messages.append("You ran out of stamina! Go back to your house to restore your energy.")
+
+    def leave(self, g):
+        g.state = "changing"

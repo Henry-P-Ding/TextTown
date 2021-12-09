@@ -1,5 +1,6 @@
 # TODO: add explanations for all classes/files
 # TODO: comment out all code
+import locations
 import settings
 import os
 
@@ -22,7 +23,6 @@ class Game:
 
     # update logic for game loop
     def update(self):
-        self.prompts = []
         if self.state == "changing":
             # lists out options of available locations to travel to
             self.messages.append(self.list_available_locations())
@@ -43,7 +43,7 @@ class Game:
         # https://stackoverflow.com/questions/2084508/clear-terminal-in-python
         os.system('cls' if os.name == 'nt' else 'clear')
 
-        # diplace messages sequentially
+        # display messages sequentially
         for message in self.messages:
             print(message)
 
@@ -51,9 +51,11 @@ class Game:
     def prompt(self):
         self.messages = []
         # asks user for a valid input for a new location to travel to
+        print("-" * 80)
         for prompt in self.prompts:
             print(prompt)
-        self.inputs = input("-" * 80 + "\n>> ")
+        self.inputs = input(">> ")
+        self.prompts = []
 
         # processes inputs
         if self.state == "changing":
@@ -69,6 +71,9 @@ class Game:
             except IndexError:
                 self.messages.append("Not a valid location.")
         elif self.state == "playing":
+            if isinstance(settings.LOCATIONS[self.player.location], locations.Farm) and \
+                    settings.LOCATIONS[self.player.location].question_mode != 0:
+                return
             try:
                 action_index = int(self.inputs)
                 settings.LOCATIONS[self.player.location].actions[action_index](self)

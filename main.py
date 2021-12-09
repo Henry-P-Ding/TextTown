@@ -1,6 +1,6 @@
 """
 TextTown is an interactive text-based RPG set within a medieval town.
-December 7, 2021
+December 7, 2021,
 Henry Ding
 """
 from game import *

@@ -11,3 +11,5 @@ https://www.tutorialspoint.com/python/assertions_in_python.htm
     - assertions in python
 https://www.ascii-art-generator.org/
     - program used to convert all pixel art images to ascii equivalents
+https://www.geeksforgeeks.org/eval-in-python/
+    - learned about eval() in Python
