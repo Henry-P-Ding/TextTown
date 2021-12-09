@@ -7,11 +7,3 @@ LOCATIONS = {
     "shop": locations.Shop(["house"]),
     "farm": locations.Farm(["house"])
 }
-
-# possible game states
-STATES = [
-    "changing",
-    "playing",
-    "title",
-    "booting"
-]

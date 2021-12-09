@@ -1,8 +1,3 @@
-https://www.geeksforgeeks.org/private-methods-in-python/
-    - I learned about specifying private/public access using the __ prefix from this source.
-    - Used in locations.py for location classes
-https://www.geeksforgeeks.org/method-overriding-in-python/
-    - learned about overridding in location files here
 https://stackoverflow.com/questions/402504/how-to-determine-a-python-variables-type
     - used for variable type confirmation in location class
 https://docs.python.org/3/library/exceptions.html#bltin-exceptions

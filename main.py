@@ -14,10 +14,6 @@ class Player:
         self.grain = 0
         self.house_tier = 0
 
-    # learned from Choate Programming Union Meeting
-    def __str__(self):
-        return self.location + " " + str(self.stamina) + " " + str(self.balance)
-
 
 player = Player()
 game = Game(player, "booting")
@@ -25,3 +21,5 @@ game = Game(player, "booting")
 running = True
 while running:
     game.loop()
+
+# omh
