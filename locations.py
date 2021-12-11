@@ -128,7 +128,7 @@ class Shop(Location):
                              str(self.grain_cost) + " dollars."
         counter += 1
         available_actions += "\n(" + str(counter) + ") Upgrade my house for " + \
-                             str(self.HOUSE_PRICES[g.player.house_tier]) + "dollars ."
+                             str(self.HOUSE_PRICES[g.player.house_tier]) + " dollars ."
         counter += 1
         available_actions += "\n(" + str(counter) + ") Leave the shop."
         g.messages.append(available_actions)
