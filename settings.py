@@ -1,3 +1,6 @@
+"""
+A settings file containing the configuration of the game map (with locations on the game map are adjacent to each other).
+"""
 import locations
 
 # location dict with adjacency list; other locations connected to this location are listed.

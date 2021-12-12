@@ -1,5 +1,9 @@
-# TODO: add explanations for all classes/files
-# TODO: comment out all code
+"""
+The main game file with a Game class containing general functionality for updating the game state, rendering graphics,
+and processing user inputs. The game class also contains useful data to be transferred to different classes such as the
+current game state, the player object associated with the game, "messages" to be rendered, player inputs, etc. Other
+functionality associated with specific locations are located in the locations.py file.
+"""
 import locations
 import settings
 import os
@@ -23,13 +27,27 @@ class Game:
                    @@@         @@@      @@@   @@@@@@   @@@@@@   @@@      @@@    
                    @@@            @@@@@@      @@@         @@@   @@@      @@@    
                                                                                 
+Upgrade your house to the highest tier!
 '''
         self.player = player
+        '''
+        The game "state", what the game is trying to accomplish during the current game loop iteration.
+        The possible game states are: 
+            "title": The title screen.
+            "playing": When the player is performing actions at a location 
+            "changing": When the player is asked to change locations.
+            "booting": The loading screen animation
+        '''
         self.state = state
+        # list containing strings to be rendered in the render() step at the top of the terminal
         self.messages = []
+        # list containing strings to be rendered in the prompt() step that ask the player questions
         self.prompts = []
+        # string containing all user input characters
         self.inputs = ""
+        # a day counter to track game progression
         self.day_count = 1
+        # a counter used to animate the loading animation
         self.boot_up_counter = 0
 
     def invalid_input_message(self):
@@ -58,16 +76,20 @@ class Game:
         elif self.state == "playing":
             self.day_count += 1
             self.messages.append("\nDay: " + str(self.day_count))
+            # When the game is "playing" while the player is in a certain location, the location contains code to be
+            # executed in its execute() method.
             settings.LOCATIONS[self.player.location].execute(self)
-
-            # formats the contents of player's inventory
+            # adds the contents of player's inventory to rendered list.
             self.messages.append(self.display_player_inventory())
         elif self.state == "booting":
+            # 48 corresponds to the height of the terminal window. The loading bar moves from the bottom of the terminal
+            # to the top during the "booting" game state.
             if self.boot_up_counter < 48:
                 self.messages.append("\n" * (47 - self.boot_up_counter) + (36 * "-" + "LOADING" + 37 * "-" + "\n") + \
                                      "\n" * self.boot_up_counter)
                 self.boot_up_counter += 1
             else:
+                # once booting is completed, the game state is changed to the "title" state.
                 self.state = "title"
                 self.messages.append(self.TITLE)
                 self.prompts.append("Start the game? [yes] or [no]")
@@ -80,18 +102,22 @@ class Game:
         # https://stackoverflow.com/questions/2084508/clear-terminal-in-python
         os.system('cls' if os.name == 'nt' else 'clear')
 
-        # display messages sequentially
+        # display messages sequentially line by line. Different entries in the self.messages list are displayed on
+        # separate lines.
         for message in self.messages:
             print(message)
+
+        # visual delay in "booting" screen to create animation
         if self.state == "booting":
             time.sleep(0.01)
 
     # prompts user for inputs
     def prompt(self):
+        # clears messages list since all messages had just been redendered.
         self.messages = []
         if self.state != "booting":
-            # asks user for a valid input for a new location to travel to
             print("-" * 80)
+            # prints prompts (questions) that indicate what type of user input is expected. Used in the harvest math mode.
             for prompt in self.prompts:
                 print(prompt)
             self.inputs = input(">> ").lower().strip()
@@ -107,24 +133,32 @@ class Game:
                 self.messages.append(self.TITLE)
                 self.invalid_input_message()
 
-        # processes inputs
         elif self.state == "changing":
+            # Locations that the player can travel to based on the player's current location
             adjacent_locations = settings.LOCATIONS[self.player.location].adjacent
             try:
                 new_location = adjacent_locations[int(self.inputs)]
+                # settings.LOCATIONS location class is accessed by a dictionary entry
+                # exit() code associated with class when location is exited by the player.
                 settings.LOCATIONS[self.player.location].exit(self)
+                # enter() code associated with class when a new location is entered by the player.
                 settings.LOCATIONS[new_location].enter(self)
                 self.player.location = new_location
+                # After the player changes location, the game state is changed to be "playing" at that new location.
                 self.state = "playing"
             except ValueError:
                 self.invalid_input_message()
             except IndexError:
                 self.messages.append("Not a valid location.")
         elif self.state == "playing":
+            # If the player is in harvest mode, the input is not processed in this prompt() method but is processed
+            # within the Farm location class itself.
             if isinstance(settings.LOCATIONS[self.player.location], locations.Farm) and \
                     settings.LOCATIONS[self.player.location].question_mode != 0:
                 return
             try:
+                # Accesses .actions attribute in each Location containing list of actions that the player can perofrm at
+                # a location. Player input selects these actions.
                 action_index = int(self.inputs)
                 settings.LOCATIONS[self.player.location].actions[action_index](self)
             except ValueError:
