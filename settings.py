@@ -7,6 +7,6 @@ import locations
 # This is separated from 'locations.py' in order to separate location functionality from implementation in game map.
 LOCATIONS = {
     "house": locations.House(["shop", "farm"]),
-    "shop": locations.Shop(["house"]),
-    "farm": locations.Farm(["house"])
+    "shop": locations.Shop(["house", "farm"]),
+    "farm": locations.Farm(["house", "shop"])
 }

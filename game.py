@@ -58,7 +58,7 @@ Upgrade your house to the highest tier!
         adjacent_locations = settings.LOCATIONS[self.player.location].adjacent
         location_listing = "Where would you like to go?"
         for i in range(0, len(adjacent_locations)):
-            location_listing += "\n(" + str(i) + ") " + adjacent_locations[i]
+            location_listing += "\n(" + str(i + 1) + ") " + adjacent_locations[i]
         return location_listing
 
     def display_player_inventory(self):
@@ -137,7 +137,7 @@ Upgrade your house to the highest tier!
             # Locations that the player can travel to based on the player's current location
             adjacent_locations = settings.LOCATIONS[self.player.location].adjacent
             try:
-                new_location = adjacent_locations[int(self.inputs)]
+                new_location = adjacent_locations[int(self.inputs) - 1]
                 # settings.LOCATIONS location class is accessed by a dictionary entry
                 # exit() code associated with class when location is exited by the player.
                 settings.LOCATIONS[self.player.location].exit(self)
@@ -159,7 +159,7 @@ Upgrade your house to the highest tier!
             try:
                 # Accesses .actions attribute in each Location containing list of actions that the player can perofrm at
                 # a location. Player input selects these actions.
-                action_index = int(self.inputs)
+                action_index = int(self.inputs) - 1
                 settings.LOCATIONS[self.player.location].actions[action_index](self)
             except ValueError:
                 self.invalid_input_message()

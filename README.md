@@ -1,4 +1,6 @@
 # TextTown
+####December 7, 2021
+####Henry Ding
 
 TextTown is an interactive text-based RPG set within a medieval town. In the TextTown, the player farms grain by solving 
 math equations to upgrade their house to three different tiers. With each tier, the house becomes bigger. When the 
@@ -98,3 +100,5 @@ I like the idea of having a game that is not linear until a definite end, this g
 * https://www.youtube.com/watch?v=VO8rTszcW4s
     - **While I did not reference this resource during the project**, I learned about the general ``update()``, ``render()`` and ``input()`` game loop structure from this video years 
     ago sometime in 2016 or 2017.
+# Honor Code
+OMH

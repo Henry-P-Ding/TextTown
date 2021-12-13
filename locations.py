@@ -88,7 +88,7 @@ class House(Location):
         available_actions = "\nWhat would you like to do?"
         # counter is enumerated into the text graphics to show increasing numbers that correspond to user input. For
         # example, the first action has a (0) in front of the action.
-        counter = 0
+        counter = 1
         # sleeping option
         available_actions += "\n(" + str(counter) + ") Sleep"
         counter += 1
@@ -142,7 +142,7 @@ class Shop(Location):
         super().execute(g)
         g.messages.insert(0, format_image(self.images[0]))
         available_actions = "\nWhat would you like to do?"
-        counter = 0
+        counter = 1
         self.grain_bundle_size = 5 + rand.randint(-1, 1)
         self.grain_cost = 5 + rand.randint(-1, 1)
         # selling grain option
@@ -238,7 +238,7 @@ class Farm(Location):
         if self.question_mode == 0:
             g.messages.insert(0, format_image(self.images[0]))
             available_actions = "\nWhat would you like to do?"
-            counter = 0
+            counter = 1
             # re-randomizes harvest yield.
             self.harvest_yield = 3 + rand.randint(-1, 1)
             self.stamina_drain = 15 + rand.randint(-5, 5)
